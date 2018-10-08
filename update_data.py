@@ -5,6 +5,8 @@ import datetime
 #from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
+import schedule
+import time
 
 client = gdax.PublicClient()
 
@@ -29,7 +31,7 @@ def extractBTC(startDate, endDate):
         df_close = close[i][1]
 
         df_BTC.loc[BTCcnt] = df_humanTime, df_close
-        df_BTC.to_csv("latest_BTC_close.csv", index=False)
+        #df_BTC.to_csv("latest_BTC_close.csv", index=False)
 
 def extractETH(startDate, endDate):
     global ETHCnt
@@ -45,8 +47,51 @@ def extractETH(startDate, endDate):
         df_close = close[i][1]
 
         df_ETH.loc[ETHCnt] = df_humanTime, df_close
-        df_ETH.to_csv("latest_ETH_close.csv", index=False)
+        #df_ETH.to_csv("latest_ETH_close.csv", index=False)
 
+
+df = pd.read_csv("/home/andras/PycharmProjects/gdax-api-python/cryptoExtract/latest_BTC_close.csv")
+
+
+endDate = "2018-10-07T21:00:00"
+startDate = "2018-10-07T20:00:00"
+extractBTC(startDate, endDate)
+
+new_df = pd.DataFrame(df_BTC, columns=['Date', 'Close']).append(df, ignore_index=True)
+
+
+# def job():
+#    print("I'm working...")
+#
+# schedule.every(10).minutes.do(job)
+# schedule.every().hour.do(job)
+# schedule.every().day.at("10:30").do(job)
+#
+# while 1:
+#    schedule.run_pending()
+#    time.sleep(1)
+
+
+
+# periodically check this
+serverTime = client.time()
+serverEpoch = serverTime['epoch']
+serverHumanMinute = datetime.datetime.fromtimestamp(int(serverEpoch)).strftime('%M')
+print(serverHumanMinute)
+
+# and if this happens
+if serverHumanMinute == '00'
+
+# then get btc close data at current server time
+
+# and add it to csv
+
+# then get action prediction from ai model (which uses the latest csv)
+
+# apply action to API
+
+
+'''
 
 endDate = "2018-10-07T20:00:00"
 startDate = "2018-10-01T20:00:00"
@@ -101,3 +146,5 @@ extractETH(startDate, endDate)
 # #plt.axhline(50, color='black', linewidth=0.5)
 #
 # plt.show()
+
+'''

@@ -1,8 +1,8 @@
 import gdax
 
-PASSPHRASE = ""
-KEY = ""
-B64SECRET = ""
+PASSPHRASE = "t1ktqljesek"
+KEY = "741167ff79da88f0fc0b086f2ba74aa0"
+B64SECRET = "WitJOiwf9pK2Hv2mDgv8sH+2bizVb46+nzJqSpEVh4LSWEXEPRQaZi1HB4/iqOr9qeEObui4CJxfnXs+ny4qgg=="
 
 client = gdax.PrivateClient(KEY, B64SECRET, PASSPHRASE)
 
