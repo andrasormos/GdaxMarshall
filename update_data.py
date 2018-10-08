@@ -88,7 +88,7 @@ if serverHumanMinute == '00'
 
 # then get action prediction from ai model (which uses the latest csv)
 
-# apply action to API
+# apply action to API 1
 
 
 '''
