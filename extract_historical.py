@@ -48,6 +48,11 @@ def extractETH(startDate, endDate):
         df_ETH.to_csv("/home/andras/PycharmProjects/gdax-api-python/cryptoExtract/latest_ETH_close.csv", index=False)
 
 
+endDate = "2018-10-10T22:00:00"
+startDate = "2018-10-07T20:00:00"
+extractBTC(startDate, endDate)
+extractETH(startDate, endDate)
+
 endDate = "2018-10-07T20:00:00"
 startDate = "2018-10-01T20:00:00"
 extractBTC(startDate, endDate)

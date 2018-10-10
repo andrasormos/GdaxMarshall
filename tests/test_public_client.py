@@ -15,9 +15,9 @@ client = gdax.PublicClient()
 # print("get_product_order_book()")
 # print(output, "\n")
 #
-# output = client.get_product_ticker(gdax.BTC_GBP)
-# print("get_product_ticker()")
-# print(output, "\n")
+output = client.get_product_ticker(gdax.BTC_GBP)
+print("get_product_ticker()")
+print(output, "\n")
 #
 # output = client.get_trades(gdax.BTC_USD)
 # print("get_trades()")

@@ -17,78 +17,93 @@ df_ETH = pd.DataFrame(columns=["Date", "Close"])
 BTCcnt = 0
 ETHCnt = 0
 
-def extractBTC(startDate, endDate):
-    global BTCcnt
-    output = client.get_historic_rates(gdax.BTC_USD, startDate, endDate, granularity=3600)
-    close = np.asarray(output)
-    close = close[:, [0, 4]]
+def extractBTC():
+	old_csv = pd.read_csv("/home/andras/PycharmProjects/gdax-api-python/cryptoExtract/latest_BTC_close.csv")
+	output = client.get_product_ticker(gdax.BTC_USD)
+	close = np.asarray(output)
+	close = output.get('price')
+	date = output.get('time')
+	df_date = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ").strftime('%Y-%m-%d %I-%p')
+	df_close = close
 
+	df_BTC.loc[1] = df_date, df_close
+	print(df_BTC)
 
-    for i in range(len(close)):
-        BTCcnt += 1
-        unixTime = close[i][0]
-        df_humanTime = datetime.datetime.fromtimestamp(unixTime).strftime('%Y-%m-%d %I-%p')
-        df_close = close[i][1]
+	new_csv = pd.DataFrame(df_BTC, columns=['Date', 'Close']).append(old_csv, ignore_index=True)
+	new_csv.to_csv("/home/andras/PycharmProjects/gdax-api-python/cryptoExtract/latest_BTC_close.csv", index=False)
 
-        df_BTC.loc[BTCcnt] = df_humanTime, df_close
-        #df_BTC.to_csv("latest_BTC_close.csv", index=False)
+def extractETH():
+	old_csv = pd.read_csv("/home/andras/PycharmProjects/gdax-api-python/cryptoExtract/latest_ETH_close.csv")
+	output = client.get_product_ticker(gdax.ETH_USD)
+	close = np.asarray(output)
+	close = output.get('price')
+	date = output.get('time')
+	df_date = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ").strftime('%Y-%m-%d %I-%p')
+	df_close = close
 
-def extractETH(startDate, endDate):
-    global ETHCnt
-    output = client.get_historic_rates(gdax.ETH_USD, startDate, endDate, granularity=3600)
-    close = np.asarray(output)
-    close = close[:, [0, 4]]
+	df_ETH.loc[1] = df_date, df_close
+	print(df_ETH)
 
-
-    for i in range(len(close)):
-        ETHCnt += 1
-        unixTime = close[i][0]
-        df_humanTime = datetime.datetime.fromtimestamp(unixTime).strftime('%Y-%m-%d %I-%p')
-        df_close = close[i][1]
-
-        df_ETH.loc[ETHCnt] = df_humanTime, df_close
-        #df_ETH.to_csv("latest_ETH_close.csv", index=False)
-
-
-df = pd.read_csv("/home/andras/PycharmProjects/gdax-api-python/cryptoExtract/latest_BTC_close.csv")
-
-
-endDate = "2018-10-07T21:00:00"
-startDate = "2018-10-07T20:00:00"
-extractBTC(startDate, endDate)
-
-new_df = pd.DataFrame(df_BTC, columns=['Date', 'Close']).append(df, ignore_index=True)
-
-
-# def job():
-#    print("I'm working...")
-#
-# schedule.every(10).minutes.do(job)
-# schedule.every().hour.do(job)
-# schedule.every().day.at("10:30").do(job)
-#
-# while 1:
-#    schedule.run_pending()
-#    time.sleep(1)
+	new_csv = pd.DataFrame(df_ETH, columns=['Date', 'Close']).append(old_csv, ignore_index=True)
+	new_csv.to_csv("/home/andras/PycharmProjects/gdax-api-python/cryptoExtract/latest_ETH_close.csv", index=False)
 
 
 
-# periodically check this
-serverTime = client.time()
-serverEpoch = serverTime['epoch']
-serverHumanMinute = datetime.datetime.fromtimestamp(int(serverEpoch)).strftime('%M')
-print(serverHumanMinute)
+serverTimeFetch = client.time()
+serverISOTime = serverTimeFetch['iso']
+serverHumanTime = datetime.datetime.strptime(serverISOTime, "%Y-%m-%dT%H:%M:%S.%fZ").strftime('%Y-%m-%d %H:%M:%S')
+serverHour = datetime.datetime.strptime(serverISOTime, "%Y-%m-%dT%H:%M:%S.%fZ").strftime('%H')
+lastServerHour = serverHour
+print("last server hour:", lastServerHour)
+print("current server hour:", serverHour)
 
-# and if this happens
-if serverHumanMinute == '00'
+def job():
+	global	lastServerHour
+	# periodically check this
 
-# then get btc close data at current server time
+	try:
+		serverTimeFetch = client.time()
+		serverISOTime = serverTimeFetch['iso']
 
-# and add it to csv
+		serverHumanTime = datetime.datetime.strptime(serverISOTime, "%Y-%m-%dT%H:%M:%S.%fZ").strftime(
+			'%Y-%m-%d %H:%M:%S')
+		serverHour = datetime.datetime.strptime(serverISOTime, "%Y-%m-%dT%H:%M:%S.%fZ").strftime('%H')
+		serverMinute = datetime.datetime.strptime(serverISOTime, "%Y-%m-%dT%H:%M:%S.%fZ").strftime('%M')
+		# print("serverMinute", serverMinute)
+		if 1 == 1:
 
-# then get action prediction from ai model (which uses the latest csv)
+			if serverHour != lastServerHour and int(serverMinute) >= 2:
+				print("Time:", serverHumanTime, " - Time to fetch data")
+				extractBTC()
 
-# apply action to API 1
+				lastServerHour = serverHour
+
+	# then get btc close data at current server time
+
+	# and add it to csv
+
+	# then get action prediction from ai model (which uses the latest csv)
+
+	# apply action to API 1
+
+	except:
+		print("Couldn't fetch server time")
+
+
+
+
+
+
+
+
+schedule.every(5).seconds.do(job)
+
+while 1:
+   schedule.run_pending()
+   time.sleep(1)
+
+
+
 
 
 '''
