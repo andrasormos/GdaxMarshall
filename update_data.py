@@ -83,7 +83,7 @@ def job():
 	# and add it to csv
 
 	# then get action prediction from ai model (which uses the latest csv)
-
+	# as
 	# apply action to API 1
 
 	except:
